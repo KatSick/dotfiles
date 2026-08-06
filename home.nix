@@ -26,6 +26,17 @@ in
     enable = true;
     autosuggestion.enable = true;      # ghost text from history
     syntaxHighlighting.enable = true;  # commands turn green when valid
+
+    # Two zsh binaries read this same ~/.zshrc: macOS's /bin/zsh (the login
+    # shell, 5.9) and nix's (5.9.1). fpath embeds $ZSH_VERSION, so each sees a
+    # different set of completion functions - 1014 files vs 3006. Sharing one
+    # ~/.zcompdump makes each one treat the other's dump as stale and rebuild it,
+    # so alternating between them costs 1.6-2.5s per shell instead of 0.13s.
+    # Keying the dump by version gives each binary its own cache, and also stops
+    # a future zsh upgrade from silently reintroducing the same thrash.
+    completionInit = ''
+      autoload -U compinit && compinit -d "$HOME/.zcompdump-$ZSH_VERSION"
+    '';
     initContent = ''
       bindkey '^f' autosuggest-accept
     '';
