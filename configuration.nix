@@ -13,6 +13,15 @@
   };
   system.stateVersion = 6;
 
+  # home-manager already runs `compinit` in ~/.zshrc, and it runs it *after*
+  # `typeset -U fpath` dedups fpath. nix-darwin's own compinit in /etc/zshrc runs
+  # before that dedup, so the two disagree on the completion-file count (3096 vs
+  # 3006). Each one therefore considers the other's ~/.zcompdump stale and does a
+  # full rebuild, so the dump can never be reused: every single shell start pays
+  # two compaudit+compdump passes over ~3000 completion files. Dropping the global
+  # one takes interactive startup from ~7.4s to ~0.14s.
+  programs.zsh.enableGlobalCompInit = false;
+
   # Nix language servers, available to every user and to editors launched
   # outside a home-manager shell.
   environment.systemPackages = with pkgs; [

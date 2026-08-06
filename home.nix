@@ -31,6 +31,7 @@ in
     '';
     shellAliases = {
       ".." = "cd ..";
+      ze = "zed ~/.zshrc";
       gca = "git add .";
       gp = "git push";
       gpr = "git pull --rebase";
