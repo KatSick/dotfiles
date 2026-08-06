@@ -37,8 +37,8 @@
       "herdr"
     ];
     casks = [
-      "claude-code",
-      "zed",
+      "claude-code"
+      "zed"
     ];
   };
 }
