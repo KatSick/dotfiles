@@ -2,6 +2,7 @@
 home/.config/herdr/*.log
 home/.config/herdr/session.json
 home/.config/herdr/*.sock
+home/.config/zed/prompts
 
 # macOS + nix build noise
 .DS_Store
@@ -17,3 +18,8 @@ result-*
 
 # no-mistakes local validation state - never commit in this public repo
 .no-mistakes/
+
+# real git identities live only under ~/.config/git/; only the .example
+# templates are tracked. this catches a filled-in copy dropped next to them.
+/home/.config/git/.gitconfig-work
+/home/.config/git/.gitconfig-personal

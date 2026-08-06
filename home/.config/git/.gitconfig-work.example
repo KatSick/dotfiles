@@ -1,0 +1,27 @@
+# Template only - placeholders, never a real identity.
+#
+#   cp home/.config/git/.gitconfig-work.example ~/.config/git/.gitconfig-work
+#
+# The destination is outside this repo on purpose: this repo is public. Do not
+# symlink it back in from home.nix, and do not commit a filled-in copy.
+# It is included for repos under ~/git/work/ - see programs.git.includes in home.nix.
+
+[user]
+    name = Your Name
+    email = you@company.example
+    # Public key of the work SSH key in 1Password. Drop this line and the two
+    # gpgSign lines below if you are not signing work commits yet.
+    signingKey = ssh-ed25519 AAAA...
+
+[commit]
+    gpgSign = true
+
+[tag]
+    gpgSign = true
+
+# Redirects work clones onto the host alias defined in ~/.ssh/config.work, so a
+# work repo authenticates as the work GitHub account and cannot push as the
+# personal one. Scoped to ~/git/work/ because only that path includes this file.
+[url "git@github.com-work:"]
+    insteadOf = git@github.com:
+    insteadOf = https://github.com/

@@ -1,4 +1,4 @@
-{ user, ... }:
+{ user, pkgs, ... }:
 
 {
   # Determinate already manages the Nix daemon, so nix-darwin shouldn't.
@@ -12,6 +12,14 @@
     home = "/Users/${user}";
   };
   system.stateVersion = 6;
+
+  # Nix language servers, available to every user and to editors launched
+  # outside a home-manager shell.
+  environment.systemPackages = with pkgs; [
+    nil
+    nixd
+  ];
+
   system.defaults = {
     NSGlobalDomain = {
       AppleInterfaceStyle = "Dark";
@@ -39,6 +47,9 @@
     casks = [
       "claude-code"
       "zed"
+      "ghostty"
+      "google-chrome"
+      "1password"
     ];
   };
 }
