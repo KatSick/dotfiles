@@ -36,6 +36,7 @@ in
       gpr = "git pull --rebase";
       gcm = "git switch main";
       gcmm = "git switch master";
+      hcu = "cd ~/.dotfiles && gpr && ./rebuild.sh";
       cc = "claude --dangerously-skip-permissions";
       co = "codex --full-auto";
     };
