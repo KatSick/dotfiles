@@ -33,6 +33,7 @@ Running the switch builds:
 On a brand new Mac, from a bare clone of this repo:
 
 ```sh
+xcode-select --install
 git clone https://github.com/katsick/dotfiles.git
 cd dotfiles
 ```
