@@ -15,7 +15,7 @@ If you find a bug, please open a GitHub Issue using the bug report template.
 
 Running the switch builds:
 
-- System settings (dark mode, key repeat, dock, Finder, trackpad)
+- System settings (dark mode, solid `#202020` wallpaper matching the menu bar, key repeat, dock, Finder, trackpad)
 - Homebrew apps (casks and CLI tools)
 - Nix user packages (ripgrep, fd, fzf, jq, lazygit, nvim, Hack Nerd Font)
 - Shell (zsh, aliases, starship prompt)
@@ -27,6 +27,36 @@ Running the switch builds:
 ## Prerequisites
 
 - Apple Silicon Mac, by default
+- Full Disk Access for the terminal you rebuild from - see below
+
+### Full Disk Access
+
+`configuration.nix` sets Reduce Motion and Reduce Transparency, which live in the
+`com.apple.universalaccess` preference domain.
+macOS protects that domain with TCC, so a write is rejected unless the process doing it has
+Full Disk Access - running under `sudo` makes no difference.
+
+This is not an optional nicety.
+nix-darwin's activation script runs under `set -e`, so the failed write aborts the whole
+switch and every setting generated after it is skipped.
+The symptom is:
+
+```
+Could not write domain com.apple.universalaccess; exiting
+```
+
+Grant it once, to the terminal app you run `./rebuild.sh` from:
+
+**System Settings > Privacy & Security > Full Disk Access**, then add your terminal
+(Ghostty, if you use the one this repo installs) and toggle it on.
+macOS will ask you to quit and reopen the app.
+Then re-run `./rebuild.sh`.
+
+Full Disk Access is a broad grant - that terminal can then read any file on the machine,
+including data belonging to other apps.
+If you would rather not, delete the two `universalaccess` lines from `configuration.nix` and
+tick the boxes yourself in System Settings > Accessibility > Display.
+Nothing else in this repo needs the permission.
 
 ## Fresh-machine setup
 
@@ -161,6 +191,10 @@ If you don't use it, just remove it from `brews` in your copy.
 The files under `home/` are the real files - editing them here is editing your live config, no rebuild needed to see the change in your editor.
 `home.nix` uses `mkOutOfStoreSymlink` to point paths like `~/.config/nvim` straight at `home/.config/nvim` in this repo, so the two never drift out of sync.
 You only run `./rebuild.sh` when you change something that isn't just a symlinked file, like a package list or a system default.
+
+Sol is the one exception, because it saves its settings by writing a new file and renaming it over `~/.config/sol/config.json`, which replaces a symlink instead of following it.
+`home/.config/sol/config.json` is therefore copied into place on a machine that does not have one yet, and left alone after that.
+Change Sol's settings in Sol, then run `solsave` to copy the live file back here and commit it.
 
 ## Optional Pi configuration
 

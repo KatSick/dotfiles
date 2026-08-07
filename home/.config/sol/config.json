@@ -1,0 +1,50 @@
+{
+  "firstTranslationLanguage": "en",
+  "secondTranslationLanguage": "uk",
+  "thirdTranslationLanguage": null,
+  "globalShortcut": "command",
+  "showWindowOn": "screenWithFrontmost",
+  "calendarEnabled": false,
+  "showAllDayEvents": true,
+  "launchAtLogin": true,
+  "mediaKeyForwardingEnabled": true,
+  "showUpcomingEvent": true,
+  "scratchPadColor": "SYSTEM",
+  "searchFolders": [],
+  "searchEngine": "google",
+  "customSearchUrl": "https://google.com/search?q=%s",
+  "shortcuts": {
+    "resize_fullscreen": "control+option+return",
+    "lock": "command+option+q",
+    "resize_right_half": "control+option+right",
+    "resize_left_half": "control+option+left",
+    "resize_top_half": "control+option+up",
+    "resize_bottom_half": "control+option+down",
+    "resize_top_left": "control+option+u",
+    "resize_top_right": "control+option+i",
+    "resize_bottom_left": "control+option+j",
+    "resize_bottom_right": "control+option+k",
+    "move_next_screen": "control+option+command+right",
+    "move_previous_screen": "control+option+command+left",
+    "scratchpad": "command+shift+space",
+    "emoji_picker": "command+control+space",
+    "clipboard_manager": "command+shift+v",
+    "file:///Applications/Google%20Chrome.app/": "option+space",
+    "file:///Applications/Zed.app/": "command+option+space",
+    "file:///Applications/Ghostty.app/": "control+space"
+  },
+  "showInAppBrowserBookMarks": true,
+  "hasDismissedGettingStarted": true,
+  "hyperKeyEnabled": false,
+  "customItems": [
+    {
+      "id": "4d366b67-474d-4e31-a714-5717ce3acdd6",
+      "name": "claude",
+      "icon": "Apple",
+      "color": "#e2e2e2",
+      "text": "https://claude.ai/new",
+      "type": "CUSTOM"
+    }
+  ],
+  "disabledItemIds": []
+}

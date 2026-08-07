@@ -42,8 +42,47 @@
       AppleShowAllExtensions = true;
     };
     dock.autohide = true;
+    dock.orientation = "right";
+
+    # Minimise with a straight scale rather than the genie warp. The other
+    # accepted value is "suck", which macOS supports but never exposes in
+    # System Settings.
+    #
+    # This still applies with reduceMotion below turned on - checked on 26.6 by
+    # setting it and minimising a window. Reduce Motion flattens plenty of other
+    # animations, but it leaves the minimise effect to mineffect.
+    #
+    # Unlike the universalaccess settings below, this one is picked up by
+    # restarting the Dock (`killall Dock`) rather than needing a fresh login.
+    dock.mineffect = "scale";
     finder.FXPreferredViewStyle = "Nlsv";  # list view by default
     finder.CreateDesktop = false;          # clean desktop
+
+    # System Settings > Accessibility > Display.
+    #
+    # These two need Full Disk Access on the terminal you run ./rebuild.sh from,
+    # and activation hard-fails without it. com.apple.universalaccess is a
+    # TCC-protected domain: cfprefsd rejects the write no matter what uid asks,
+    # so sudo does not help and the plist being owned by you is a red herring -
+    # it reads fine, it just will not take a write. You get
+    #
+    #   Could not write domain com.apple.universalaccess; exiting
+    #
+    # and because nix-darwin's activation script runs under `set -e` with no
+    # `|| true` on the defaults calls, the switch aborts *there*. Every setting
+    # generated after this point is silently skipped - including
+    # TISRomanSwitchState below, so the Caps Lock layout switcher quietly stops
+    # being applied. A failure here is never just cosmetic.
+    #
+    # Granting FDA is a one-time manual step; see the README. Everything else in
+    # this file applies without it, so if you would rather not hand a terminal
+    # that much reach, delete these two lines and tick the boxes by hand.
+    #
+    # Like the input sources below, the value is only read at login and is
+    # cached per running app, so a rebuild will not restyle the session you are
+    # sitting in.
+    universalaccess.reduceMotion = true;        # no space-switch or app-open animation
+    universalaccess.reduceTransparency = true;  # opaque menu bar, dock and sidebars
   };
 
   # Keyboard input sources. nix-darwin has no typed option for these, so this
@@ -117,6 +156,16 @@
     onActivation.extraFlags = [ "--force" ];
     brews = [
       "herdr"
+      "eza"
+      # proto is the toolchain version manager; ~/.proto/.prototools is linked
+      # from home.nix. The three archive tools are grouped with it because they
+      # are what a downloaded toolchain gets unpacked with; keeping current
+      # versions here beats relying on whatever macOS happens to ship.
+      # Note unzip is keg-only, so it stays off PATH and Apple's stays in front.
+      "proto"
+      "unzip"
+      "gzip"
+      "xz"
     ];
     casks = [
       "claude-code"
@@ -124,6 +173,13 @@
       "ghostty"
       "google-chrome"
       "1password"
+      "shottr"
+      "sol"
+      "desktoppr"
+      # The GUI menu-bar client. Homebrew renamed the cask from `tailscale` to
+      # `tailscale-app`; `tailscale` is now the CLI-only formula, which is not
+      # what is wanted here.
+      "tailscale-app"
     ];
   };
 }
