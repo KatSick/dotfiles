@@ -76,6 +76,10 @@ in
       # proto: puts its shims on PATH and hooks directory changes so the
       # toolchain versions pinned in .prototools take effect per project.
       eval "$(proto activate zsh)"
+
+      # Internal CA trust for toolchains that cannot read the macOS Keychain
+      # (node, bun, curl, uv, the JVM).
+      [ -f "$HOME/.config/ca/env.sh" ] && source "$HOME/.config/ca/env.sh"
     '';
     shellAliases = {
       ".." = "cd ..";
