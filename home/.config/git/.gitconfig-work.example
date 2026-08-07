@@ -18,10 +18,3 @@
 
 [tag]
     gpgSign = true
-
-# Redirects work clones onto the host alias defined in ~/.ssh/config.work, so a
-# work repo authenticates as the work GitHub account and cannot push as the
-# personal one. Scoped to ~/git/work/ because only that path includes this file.
-[url "git@github.com-work:"]
-    insteadOf = git@github.com:
-    insteadOf = https://github.com/

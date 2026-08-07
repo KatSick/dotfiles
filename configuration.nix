@@ -173,6 +173,7 @@
       "ghostty"
       "google-chrome"
       "1password"
+      "1password-cli"
       "shottr"
       "sol"
       "desktoppr"
