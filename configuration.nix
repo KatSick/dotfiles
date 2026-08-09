@@ -170,11 +170,13 @@
       "unzip"
       "gzip"
       "xz"
+      "glab"
     ];
     casks = [
-      "claude-code"
+      "claude-code@latest"
       "codex"
       "zed"
+      "t3-code@nightly"
       "ghostty"
       "google-chrome"
       "1password"
