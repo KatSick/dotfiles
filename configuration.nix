@@ -188,6 +188,11 @@
       # `tailscale-app`; `tailscale` is now the CLI-only formula, which is not
       # what is wanted here.
       "tailscale-app"
+      "obsidian"
+      # Same rename story as tailscale: `syncthing` is now the headless CLI
+      # formula, and the macOS menu-bar app lives in the `syncthing-app` cask.
+      "syncthing-app"
+      "orbstack"
     ];
   };
 }
