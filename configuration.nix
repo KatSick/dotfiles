@@ -157,6 +157,10 @@
     brews = [
       "herdr"
       "eza"
+      "tuicr"
+      "gh"
+      "dua-cli"
+      "mole"
       # proto is the toolchain version manager; ~/.proto/.prototools is linked
       # from home.nix. The three archive tools are grouped with it because they
       # are what a downloaded toolchain gets unpacked with; keeping current
@@ -169,6 +173,7 @@
     ];
     casks = [
       "claude-code"
+      "codex"
       "zed"
       "ghostty"
       "google-chrome"

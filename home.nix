@@ -67,8 +67,15 @@ in
     # so alternating between them costs 1.6-2.5s per shell instead of 0.13s.
     # Keying the dump by version gives each binary its own cache, and also stops
     # a future zsh upgrade from silently reintroducing the same thrash.
+    #
+    # -C skips compinit's security audit, which is 187ms of the 290ms startup:
+    # compaudit stats all ~3000 completion functions across the 20 fpath entries
+    # on every shell, and they are all read-only /nix/store paths, so it can only
+    # ever come back clean. -C also skips the staleness check, so the dump must be
+    # invalidated by hand when fpath changes - rebuild.sh deletes it, which is the
+    # only way completions get installed here (nix and homebrew both land via it).
     completionInit = ''
-      autoload -U compinit && compinit -d "$HOME/.zcompdump-$ZSH_VERSION"
+      autoload -U compinit && compinit -C -d "$HOME/.zcompdump-$ZSH_VERSION"
     '';
     initContent = ''
       bindkey '^f' autosuggest-accept
@@ -83,19 +90,25 @@ in
     '';
     shellAliases = {
       ".." = "cd ..";
+      ww = "cd ~/git/work";
+      pp = "cd ~/git/public";
+      hh = "herdr";
+      rr = "tuicr";
+      g = "cd ~/git";
       # icons render via nerd-fonts.hack above; --git needs a repo to show anything
-      ll = "eza --long --header --icons --git --group-directories-first --time-style=relative";
+      ll = "eza --long --all --header --icons --git --group-directories-first --time-style=relative";
       ze = "zed ~/.zshrc";
       gca = "git add .";
       gp = "git push";
       gpr = "git pull --rebase";
       gcm = "git switch main";
+      gc = "git switch";
       gcmm = "git switch master";
       hcu = "cd ~/.dotfiles && gpr && ./rebuild.sh";
       # Sol rewrites its config in place, so the repo copy is refreshed by hand
       # after tuning Sol - see home.activation.solConfig below.
       solsave = "cp ~/.config/sol/config.json ~/.dotfiles/home/.config/sol/config.json";
-      cc = "claude --dangerously-skip-permissions";
+      cc = "claude";
       co = "codex --full-auto";
     };
   };
@@ -111,6 +124,8 @@ in
 
     settings = {
       user.useConfigOnly = true;
+      core.untrackedCache = true;
+      index.version = 4;
     };
 
     # SSH commit signing through the 1Password agent. The key is set per identity
