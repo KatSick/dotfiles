@@ -113,7 +113,7 @@ in
       # after tuning Sol - see home.activation.solConfig below.
       solsave = "cp ~/.config/sol/config.json ~/.dotfiles/home/.config/sol/config.json";
       cc = "claude";
-      co = "codex --full-auto";
+      co = "codex";
     };
   };
 
