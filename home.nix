@@ -96,6 +96,7 @@ in
       pp = "cd ~/git/public";
       hh = "herdr";
       rr = "tuicr";
+      lg = "lazygit";
       g = "cd ~/git";
       # icons render via nerd-fonts.hack above; --git needs a repo to show anything
       ll = "eza --long --all --header --icons --git --group-directories-first --time-style=relative";

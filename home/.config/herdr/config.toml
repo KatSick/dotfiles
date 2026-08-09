@@ -9,3 +9,6 @@ agent_panel_sort = "spaces"
 
 [ui.toast]
 delivery = "terminal"
+
+[keys]
+prefix = "§"
