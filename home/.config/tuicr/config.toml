@@ -1,0 +1,12 @@
+# tuicr config. Full reference:
+# https://github.com/agavra/tuicr/blob/main/docs/CONFIG.md
+#
+# Only deliberate deviations from tuicr's defaults belong here - anything absent
+# is intentionally left at whatever tuicr ships.
+
+# matches Zed and Ghostty, which are both pinned to One Dark
+# (home/.config/zed/settings.json, home/.config/ghostty/config).
+theme = "onedark"
+
+# tuicr has no editor setting of its own: `e` shells out to $EDITOR, which
+# home.nix sets to `zed --wait`.

@@ -53,7 +53,9 @@ in
     nerd-fonts.hack
   ];
   fonts.fontconfig.enable = true;
-  home.sessionVariables.EDITOR = "nvim";
+  # --wait is not optional: without it zed forks and returns immediately, so git
+  # commit and tuicr's `e` see an empty buffer and a closed editor.
+  home.sessionVariables.EDITOR = "zed --wait";
 
   programs.zsh = {
     enable = true;
@@ -187,6 +189,8 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/nvim";
   home.file.".config/herdr".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/herdr";
+  home.file.".config/tuicr".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/tuicr";
   home.file.".config/zed".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/zed";
   home.file.".config/ghostty".source =
