@@ -1,3 +1,4 @@
+onboarding = false
 [theme]
 # Matches the One Dark set in zed's settings.json, so both editors and the
 # terminal workspace read the same. Herdr's default is catppuccin.
