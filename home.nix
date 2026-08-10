@@ -3,6 +3,63 @@
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
 
+  # TEMPORARY: codex is pinned to 0.146.1 instead of tracking the `codex`
+  # Homebrew cask, which is why it is a derivation here rather than a line in
+  # homebrew.casks. Homebrew cannot pin a cask version at all - `brew pin` is
+  # formulae-only and there is no codex@<version> cask upstream - so the choice
+  # was this or freezing the whole homebrew-cask tap, which would pin every
+  # other cask too.
+  #
+  # To unpin: delete this block and `codexPinned` from home.packages, and put
+  # "codex" back in homebrew.casks in configuration.nix.
+  # To move the pin: change codexVersion and both hashes. They are the upstream
+  # cask's own sha256 values - read them out of
+  # https://github.com/Homebrew/homebrew-cask/blob/HEAD/Casks/c/codex.rb at the
+  # commit for that version rather than computing them by hand.
+  codexVersion = "0.146.1";
+  codexPlatform = {
+    aarch64-darwin = { arch = "aarch64"; sha256 = "a0be385972f38d02e81f9b40de1f842daf8354636fc295666b8630d2f6a5aec6"; };
+    x86_64-darwin = { arch = "x86_64"; sha256 = "5b61e447baa14747e1ea6ad10ad8fca1f8ef0d5e11f53ca88a144bf52cf12e06"; };
+  }.${pkgs.stdenv.hostPlatform.system}
+    or (throw "codex ${codexVersion} pin: no hash for ${pkgs.stdenv.hostPlatform.system}");
+
+  # The whole extracted tree lands in $out, not just the binary. codex resolves
+  # its siblings - codex-path/rg and codex-resources/zsh - relative to itself,
+  # so lifting bin/codex out on its own gives a binary that starts and then
+  # fails to find its own ripgrep. The cask has the same shape: it keeps the
+  # tree in the Caskroom and only symlinks bin/codex onto PATH.
+  #
+  # dontFixup because these are prebuilt, already-signed darwin binaries:
+  # stripping them invalidates the code signature, and homebrew ships them
+  # untouched too.
+  codexPinned = pkgs.stdenvNoCC.mkDerivation {
+    pname = "codex";
+    version = codexVersion;
+    src = pkgs.fetchurl {
+      url = "https://github.com/openai/codex/releases/download/rust-v${codexVersion}/codex-package-${codexPlatform.arch}-apple-darwin.tar.gz";
+      inherit (codexPlatform) sha256;
+    };
+    # The tarball has several top-level entries rather than one wrapper dir, so
+    # it is unpacked into a directory of its own. Letting it land in the build
+    # root instead would sweep stdenv's own `env-vars` scratch file into $out
+    # along with it.
+    unpackPhase = ''
+      runHook preUnpack
+      mkdir -p source
+      tar -xzf "$src" -C source
+      runHook postUnpack
+    '';
+    sourceRoot = "source";
+    dontFixup = true;
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out
+      cp -R ./. $out/
+      runHook postInstall
+    '';
+    meta.mainProgram = "codex";
+  };
+
   # macOS keyboard shortcuts to turn off, keyed by the numeric ID macOS files
   # them under in com.apple.symbolichotkeys. See home.activation.disableHotkeys
   # below for how these are written and why it looks the way it does.
@@ -52,6 +109,9 @@ in
     neovim
     # the font everything renders in
     nerd-fonts.hack
+  ] ++ [
+    # Pinned rather than a cask - see the codexPinned comment above.
+    codexPinned
   ];
   fonts.fontconfig.enable = true;
   # --wait is not optional: without it zed forks and returns immediately, so git
@@ -109,9 +169,6 @@ in
       gc = "git switch";
       gcmm = "git switch master";
       hcu = "cd ~/.dotfiles && gpr && ./rebuild.sh";
-      # Sol rewrites its config in place, so the repo copy is refreshed by hand
-      # after tuning Sol - see home.activation.solConfig below.
-      solsave = "cp ~/.config/sol/config.json ~/.dotfiles/home/.config/sol/config.json";
       cc = "claude";
       co = "codex";
     };
@@ -202,9 +259,17 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.claude/settings.json";
   # Note: no entry for ~/.config/git/.gitconfig-{personal,work}. Both identity
   # files are local-only by design - see the git block above and AGENTS.md.
-
-  # Note: no entry for ~/.config/sol/config.json either - Sol is seeded rather
-  # than linked, see home.activation.solConfig below.
+  #
+  # Note: no entry for Raycast either, and this is not an oversight. Its settings
+  # live in a database under ~/Library/Application Support/com.raycast.macos and
+  # in com.raycast.macos.plist - binary, rewritten by the app, nothing a symlink
+  # can usefully point at. ~/.config/raycast looks like the exception but is not:
+  # it holds downloaded extension bundles keyed by UUID, which are store state,
+  # not authored config. Raycast's own portable format is an encrypted .rayconfig
+  # blob (Settings > Advanced > Export) that also carries snippets and quicklinks,
+  # so it is both undiffable and wrong for a public repo - use Raycast's Cloud
+  # Sync or point its scheduled backup at a synced folder instead.
+  # Its Cmd+Space chord is freed by home.activation.disableHotkeys below.
 
   # proto (declared in configuration.nix) keeps installed toolchains, shims and
   # a lockfile under ~/.proto too, so only the authored config file is linked.
@@ -291,45 +356,10 @@ in
       || echo "warning: could not set the wallpaper fill colour" >&2
   '';
 
-  # Sol's config is seeded once, not symlinked.
-  #
-  # Sol saves settings by renaming a freshly written file over
-  # ~/.config/sol/config.json. A rename replaces a symlink rather than following
-  # it, so a mkOutOfStoreSymlink here survives only until the first settings
-  # change: after that Sol's edits live in a plain file that the repo knows
-  # nothing about, and the next switch finds a real file in the way, moves it to
-  # config.json.hm-bak (see backupFileExtension in flake.nix) and links the stale
-  # repo copy back over it. Every setting changed since the last commit is
-  # reverted, recoverable only from the backup. Linking is simply the wrong
-  # mechanism for a file its own app rewrites wholesale.
-  #
-  # So the repo copy is a seed for a fresh machine and a snapshot otherwise. The
-  # copy is guarded on the file being absent, which means it never touches a
-  # machine where Sol has already run. Going the other way is the `solsave` alias
-  # above; the sync is manual on purpose, because there is no safe automatic
-  # answer to "the file and the repo differ" in either direction.
-  #
-  # This runs after linkGeneration rather than the bare writeBoundary the entries
-  # below use, so the seed cannot land before home-manager has finished with the
-  # directory.
-  #
-  # Only config.json is seeded, never the whole ~/.config/sol directory.
-  # config.json is the authored part - shortcuts, translation languages, search
-  # engine. Its neighbours are not: state.json holds scratchpad text, clipboard
-  # settings and calendar UUIDs, and images_pasteboard/ is clipboard image
-  # history. None of that belongs in a public repo, and all of it churns on every
-  # launch.
-  home.activation.solConfig = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-    if [ ! -e "$HOME/.config/sol/config.json" ]; then
-      run mkdir -p "$HOME/.config/sol"
-      run cp "${dotfiles}/home/.config/sol/config.json" "$HOME/.config/sol/config.json"
-    fi
-  '';
-
   # Free up the Space chords macOS claims by default.
   #
   # Both Spotlight shortcuts go: Cmd+Space is the point - it frees the chord
-  # for the sol launcher (the cask is declared in configuration.nix) - and
+  # for the Raycast launcher (the cask is declared in configuration.nix) - and
   # Cmd+Option+Space goes with it so the Spotlight section of System Settings >
   # Keyboard Shortcuts is empty. Both input-source shortcuts go the same way:
   # Ctrl+Space because the switcher swallows it out from under editors that

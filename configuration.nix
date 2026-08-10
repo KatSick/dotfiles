@@ -174,7 +174,9 @@
     ];
     casks = [
       "claude-code@latest"
-      "codex"
+      # No "codex" here on purpose: it is temporarily pinned to 0.146.1, which
+      # homebrew cannot express for a cask, so it is a nix derivation in
+      # home.nix instead. Put it back here when the pin is lifted.
       "zed"
       "t3-code@nightly"
       "ghostty"
@@ -182,7 +184,7 @@
       "1password"
       "1password-cli"
       "shottr"
-      "sol"
+      "raycast"
       "desktoppr"
       # The GUI menu-bar client. Homebrew renamed the cask from `tailscale` to
       # `tailscale-app`; `tailscale` is now the CLI-only formula, which is not
