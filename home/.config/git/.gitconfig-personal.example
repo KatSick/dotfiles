@@ -2,17 +2,10 @@
 #
 #   cp home/.config/git/.gitconfig-personal.example ~/.config/git/.gitconfig-personal
 #
-# The destination is outside this repo on purpose. Neither identity file is
-# tracked here, so no name, address, or key ends up in a public repo.
-# Included for repos under ~/git/public/ and ~/git/personal/ - see
-# programs.git.includes in home.nix.
 
 [user]
     name = Your Name
     email = you@example.com
-    # Public key of the personal SSH key in 1Password. Drop this line and the
-    # two gpgSign lines below if you are not signing commits yet - gpgSign
-    # without a signingKey makes every commit fail.
     signingKey = ssh-ed25519 AAAA...
 
 [commit]

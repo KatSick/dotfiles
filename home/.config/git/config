@@ -1,0 +1,26 @@
+[user]
+	useConfigOnly = true
+
+[core]
+	untrackedCache = true
+
+[push]
+	autoSetupRemote = true
+
+[index]
+	version = 4
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+
+[includeIf "gitdir/i:~/git/public/"]
+	path = ~/.config/git/.gitconfig-personal
+
+[includeIf "gitdir/i:~/git/personal/"]
+	path = ~/.config/git/.gitconfig-personal
+
+[includeIf "gitdir/i:~/git/work/"]
+	path = ~/.config/git/.gitconfig-work

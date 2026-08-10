@@ -9,17 +9,6 @@ home/.config/zed/prompts
 result
 result-*
 
-# Pi credentials and Home Manager adoption backups stay local
-/home/.pi/agent/auth.json
-/home/.pi/agent/**/*.backup
-
-# Pi Calm is a runtime toggle; its local state file is never tracked
-/home/.pi/agent/calm
-
-# no-mistakes local validation state - never commit in this public repo
-.no-mistakes/
-
 # real git identities live only under ~/.config/git/; only the .example
-# templates are tracked. this catches a filled-in copy dropped next to them.
 /home/.config/git/.gitconfig-work
 /home/.config/git/.gitconfig-personal
