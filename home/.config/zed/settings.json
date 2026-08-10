@@ -14,6 +14,7 @@
   // untracked. Note this only installs: an extension removed from this list is
   // left in place on machines that already have it, so drop it to `false` for
   // one sync if you want it actually gone.
+  "diff_view_style": "unified",
   "auto_install_extensions": {
     "git-firefly": true,
     "html": true,

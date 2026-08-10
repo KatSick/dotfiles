@@ -129,6 +129,7 @@ in
     settings = {
       user.useConfigOnly = true;
       core.untrackedCache = true;
+      push.autoSetupRemote = true;
       index.version = 4;
     };
 
