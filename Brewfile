@@ -33,8 +33,6 @@ brew "mole"
 brew "unzip"
 brew "gzip"
 brew "xz"
-# Terminal-based AI coding assistant
-cask "claude-code"
 # OpenAI coding agent
 cask "codex"
 # Launcher
@@ -57,6 +55,6 @@ cask "tailscale-app"
 cask "orbstack"
 # The font everything renders in
 cask "font-hack-nerd-font"
-brew wget
+brew "wget"
 cask "discord"
 cask "figma"
