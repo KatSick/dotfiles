@@ -57,3 +57,6 @@ cask "tailscale-app"
 cask "orbstack"
 # The font everything renders in
 cask "font-hack-nerd-font"
+brew wget
+cask "discord"
+cask "figma"

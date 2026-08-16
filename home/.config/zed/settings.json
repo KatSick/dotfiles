@@ -1,4 +1,8 @@
 {
+  "git_panel": {
+    "tree_view": true
+  },
+  "enable_language_server": true,
   "diff_view_style": "unified",
   "auto_install_extensions": {
     "git-firefly": true,

@@ -13,3 +13,6 @@
 - Apply that same high standard to engineering excellence: lint, test failures, and test flakiness.
   If you see one, even if it is not caused by what you are working on right now, still get it fixed.
 - Before using "dynamic workflows", "ultra code" or any harness feature that immediately spawns a large swarm of subagents, always explain the tradeoffs and ask the user for explicit approval.
+- Only write comments, when it is critical or a real gotcha, not just documenting the implementation
+- Prefer `chrome-devtools-mcp` to to the browser verifications instead of inline playwright scripts
+- Use `context7` you need to discover or research the documentation and API usages for new technology, library or if you encountered the missing apis when working with code
