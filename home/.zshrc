@@ -8,6 +8,9 @@ PROMPT='%1~ %# '
 export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 export DISABLE_ERROR_REPORTING=1
 
+# context7
+export CTX7_TELEMETRY_DISABLED=1
+
 # proto
 eval "$(proto activate zsh)"
 

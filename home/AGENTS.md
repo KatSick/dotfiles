@@ -15,4 +15,4 @@
 - Before using "dynamic workflows", "ultra code" or any harness feature that immediately spawns a large swarm of subagents, always explain the tradeoffs and ask the user for explicit approval.
 - Only write comments, when it is critical or a real gotcha, not just documenting the implementation
 - Prefer `chrome-devtools-mcp` to to the browser verifications instead of inline playwright scripts
-- Use `context7` you need to discover or research the documentation and API usages for new technology, library or if you encountered the missing apis when working with code
+- Use `context7` you need to discover or research the documentation and API usages for new technology, library or if you encountered the missing apis when working with code. Never use it for internal dependencies.
